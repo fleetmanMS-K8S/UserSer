@@ -58,16 +58,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().disable();
-		http.csrf().disable().authorizeRequests()
-				.antMatchers("/**").hasIpAddress(env.getProperty("eureka.instance.hostname"))
-			//	.antMatchers("/**").hasIpAddress("172.17.0.5")
-				//.antMatchers("/authenticate").permitAll()
-				//.antMatchers(HttpMethod.POST,"/").permitAll()
+		http.csrf().disable();
+		http.headers().frameOptions().disable();
+		http.authorizeRequests()
+				//  .antMatchers(environment.getProperty("api.h2.url.path")).permitAll()
+				.antMatchers(HttpMethod.POST,env.getProperty("api.registration.url.path")).permitAll()
+				.antMatchers(HttpMethod.POST,env.getProperty("api.login.url.path")).permitAll()
+				//      .antMatchers("/**").permitAll()
+				//  .antMatchers("/user-microservice/").permitAll()
+				// .antMatchers(HttpMethod.POST,"/**").permitAll()
+
 				.antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-			//	anyRequest().authenticated()  //
-				.and().exceptionHandling().and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		//http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); //
+				.anyRequest().authenticated()
+				.and()
+				.addFilter(new AuthorizationFilter(authenticationManager(),env));
+
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 	}
 
