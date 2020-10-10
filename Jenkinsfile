@@ -4,7 +4,7 @@ pipeline {
    environment {
    
      SERVICE_NAME = "UserSer"
-     REPOSITORY_TAG="${YOUR_DOCKERHUB_USERNAME}/${ORGANIZATION_NAME}-userser:${BUILD_ID}"
+     REPOSITORY_TAG="${YOUR_DOCKERHUB_USERNAME}/userser:${BUILD_ID}"
    }
 
    stages {
